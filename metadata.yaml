@@ -1,0 +1,77 @@
+# To be filled by the author(s) at the time of submission
+# -------------------------------------------------------
+
+title: "[Re] Accuracy is Not All You Need on Current Small Instruction-Tuned Models"
+
+authors:
+  - name: Avyay Bommaraju
+    orcid: 0009-0008-8309-6138
+    email: avyay.bommaraju@gmail.com
+    affiliations: 1,*
+
+affiliations:
+  - code:    1
+    name:    Independent researcher
+    address: El Dorado Hills, California, USA
+
+
+keywords: rescience c, machine learning, quantization, large language models, reproducibility, python
+
+code:
+  - url: https://github.com/ab-ch90/quantization-flips-small-llms
+  - doi: 10.5281/zenodo.21802395
+  - swh:
+
+data:
+  - url: https://github.com/ab-ch90/quantization-flips-small-llms
+  - doi:
+
+replication:
+ - cite: "Abhinav Dutta, Sanjeev Krishnan, Nipun Kwatra, and Ramachandran Ramjee. Accuracy is Not All You Need. Advances in Neural Information Processing Systems (NeurIPS), 2024"
+ - bib:  dutta2024accuracy
+ - url:  https://arxiv.org/abs/2407.09141
+ - doi:  10.48550/arXiv.2407.09141
+
+abstract: "We reproduce the central finding of Dutta et al. (2024), that quantizing a language model can change a large fraction of its individual answers while leaving benchmark accuracy almost unchanged, and we test how it behaves on a newer and smaller generation of models. Using the original bitsandbytes 8-bit and 4-bit conditions and the original metric definitions, we evaluate five current small instruction-tuned models (Qwen2.5-1.5B, Qwen2.5-3B, Llama-3.2-3B, Gemma-2-2B, and Phi-3.5-mini) on ARC-Challenge, MMLU, and CommonsenseQA. The core result reproduces: flips are substantial while accuracy is roughly preserved, and lower-bit quantization produces more flips. On these models, however, two of the original quantitative claims are weaker. Accuracy is preserved less well, with 4-bit drops of up to five points on the smallest model, and the balance between correct-to-incorrect and incorrect-to-correct flips shifts toward loss, to about three to two pooled across models. This shift remains below the three to one that a four-option task would produce by chance, and the elevated rate of recovered answers the original describes therefore persists, though it is weaker here and accounts for the larger accuracy loss. Using the original AllFlips metric, we confirm that wrong-to-wrong transitions are a large share of behavioral change, and a determinism control shows the measured flips are not run-to-run noise. The balance between gaining and losing correct answers has shifted toward loss on this generation, and accuracy alone does not reveal it."
+
+bibliography: bibliography.bib
+
+type: Replication
+
+domain: Machine Learning
+
+language: Python
+
+
+# To be filled by the author(s) after acceptance
+# -----------------------------------------------------------------------------
+
+review:
+  - url:
+
+contributors:
+  - name:
+    orcid:
+    role: editor
+  - name:
+    orcid:
+    role: reviewer
+  - name:
+    orcid:
+    role: reviewer
+
+dates:
+  - received:
+  - accepted:
+  - published:
+
+article:
+  - number:
+  - doi:
+  - url:
+
+journal:
+  - name:   "ReScience C"
+  - issn:   2430-3658
+  - volume: 12
+  - issue:  1
