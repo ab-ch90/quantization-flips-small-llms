@@ -132,10 +132,6 @@ def main():
         print(f"  Phi barely changed ({any_change} flips).")
         print("  -> Does NOT replicate. The Qwen effect may be model-specific.")
         print("     This is important. Rethink before any prereg.")
-    print("""
-  Then hand-check the confident reversals above, same as with Qwen, to confirm
-  they are genuine and not measurement glitches.
-""")
 
 
 if __name__ == "__main__":
