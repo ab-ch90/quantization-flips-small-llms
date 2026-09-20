@@ -131,17 +131,6 @@ def main():
             n_pass += 1
     print(f"\n  primary-claim PASS in {n_pass}/{len(summary_rows)} "
           f"model-bench-precision cells")
-    print("""
-  READ:
-    Primary claim is supported if change rate >= 2x |accuracy change| CONSISTENTLY
-    across cells (not just on average). Count the PASS cells and look for
-    consistency across models and benchmarks, not a few wins.
-
-    Dose-response supported if int4 change rate > int8 change rate consistently.
-
-    Then hand-check: pick a few confident reversals and confirm they are genuine,
-    same discipline that caught the earlier artifacts.
-""")
 
 
 if __name__ == "__main__":
