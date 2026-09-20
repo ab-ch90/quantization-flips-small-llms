@@ -66,18 +66,6 @@ def main():
     print("=" * 60)
     print("READ")
     print("=" * 60)
-    print("""
-  If BOTH models show 4-bit picking later options more across all 400 questions,
-  position bias is a real, general, sharp finding -> central to the paper.
-
-  If only the flip-set leans D (overall distribution stable), the effect is real
-  but subtler -> a section, not the headline.
-
-  If the D-lean vanishes when you look at the whole distribution, it was
-  small-sample noise in the flips -> drop it, keep the confident-reversal finding
-  as the core. Same discipline: do not build on a pattern that does not survive
-  looking at all the data.
-""")
 
 
 if __name__ == "__main__":
