@@ -137,11 +137,6 @@ def main():
         print("FLOOR IS ESSENTIALLY ZERO in all conditions. Your local setup")
         print("is deterministic. The subtract-the-floor framing is dead.")
         print("Move to pure reproducibility, as agreed.")
-    print("""
-Then sanity-check: a nonzero floor should look like a SMALL fraction of items
-flipping, concentrated on low-confidence items. If it is huge or random, suspect
-a bug (e.g. padding handling in the batched path) before believing it.
-""")
 
 
 if __name__ == "__main__":
