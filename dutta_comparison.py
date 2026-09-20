@@ -143,19 +143,6 @@ def main():
     print("\n" + "=" * 72)
     print("WHAT TO LOOK FOR")
     print("=" * 72)
-    print("""
-  - Do your current-gen Flips land in a similar range to Dutta's (roughly
-    5-11% at 4bit on MMLU)? If yes, the finding REPRODUCES. If your numbers
-    are notably different, that DIFFERENCE is your extension's core result.
-
-  - Is W->W a large share of total changes? Dutta downplayed it; if it's big
-    on current models, that's a characterization the original lacked.
-
-  - Are C->I and I->C balanced (C5)? If they're lopsided on distilled models,
-    that's a generational difference worth reporting.
-
-  This comparison is the reproduction result AND the seed of the extension.
-""")
 
 
 if __name__ == "__main__":
