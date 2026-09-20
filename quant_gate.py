@@ -159,25 +159,6 @@ def main():
     print("=" * 64)
     print("HOW TO READ THIS")
     print("=" * 64)
-    print(f"""
-  The key comparison: average accuracy change ({(acc4-acc16)*100:+.1f} pts)
-  versus how many items actually CHANGED ({any_change}, {any_change/n:.1%}).
-
-  If average accuracy barely moved but {any_change} items flipped answers, the
-  average is HIDING real behavioral change. That gap is the finding: quantization
-  doesn't just shave accuracy, it reshuffles which items the model gets right.
-  That is a defensible, non-obvious, TMLR-shaped result. -> build it.
-
-  If almost nothing flipped (any_change near 0), quantization is benign on this
-  model/benchmark and the angle is weak. Reconsider.
-
-  Calibration: a clear systematic confidence shift is a SECOND real effect worth
-  reporting even on its own.
-
-  Then hand-check: open quant_gate_outputs.json, read a few flipped items, and
-  confirm they are genuine answer changes, not a measurement glitch. Same
-  discipline as the CRI 'Just' bug and the strict-parser strawman.
-""")
 
 
 if __name__ == "__main__":
