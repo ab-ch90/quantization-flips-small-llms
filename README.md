@@ -7,75 +7,93 @@ by Avyay Bommaraju.
 This repository replicates the bitsandbytes quantization-flips analysis of
 Dutta et al., *Accuracy is Not All You Need* (NeurIPS 2024,
 [arXiv:2407.09141](https://arxiv.org/abs/2407.09141)), on five current small
-instruction-tuned models, and reports where the results diverge on this model
-generation.
+instruction-tuned models.
 
 ## What this measures
 
-For each model, the code compares the full-precision (fp16) predictions against
-the 8-bit and 4-bit quantized predictions on three multiple-choice benchmarks,
-and counts:
+For each model, the code compares full-precision (fp16) predictions with
+quantized predictions on three multiple-choice benchmarks and reports
 
-- **Flips**: answers that move between correct and incorrect (either direction).
-- **AllFlips**: Flips plus wrong-to-wrong transitions.
-- **Directional breakdown**: correct-to-incorrect (C->I), incorrect-to-correct
-  (I->C), and wrong-to-wrong (W->W).
+- **Flips**, answers that move between correct and incorrect in either direction,
+- **AllFlips**, Flips plus wrong-to-wrong transitions,
+- the **directional breakdown** (C->I, I->C, W->W) against a benchmark-specific
+  chance baseline, and
+- the flip rate of initially correct answers as a function of the fp16
+  top-two probability margin.
 
-## Models and benchmarks
+## Conditions
+
+| Label | Configuration |
+|---|---|
+| `fp16` | 16-bit reference |
+| `int8` | bitsandbytes LLM.int8(), library defaults |
+| `fp4`  | bitsandbytes 4-bit, library defaults (FP4, float32 compute). This matches the "default parameters" condition of Dutta et al. and is the replication condition. |
+| `nf4`  | bitsandbytes 4-bit NF4 with float16 compute, reported as an extension |
 
 Models: Qwen2.5-1.5B-Instruct, Qwen2.5-3B-Instruct, Llama-3.2-3B-Instruct,
 Gemma-2-2B-it, Phi-3.5-mini-instruct.
 
-Benchmarks (fixed subsets): ARC-Challenge (1,000 items), MMLU (975 items, eight
-subjects), CommonsenseQA (986 items). The exact items and answer keys are in
-`results/_bench_items.json`.
+Benchmarks:
+- ARC-Challenge test, the first 1,000 items whose options are labelled A to D
+- MMLU test, the first 125 items of each of eight fixed subjects (975 items)
+- CommonsenseQA validation, the first 1,000 items with all five options
+
+The exact items and answer keys are in `results/_bench_items.json`.
+
+## Provenance
+
+`revisions.json` pins the commit hash of every model and dataset. Every
+result file records the model and dataset revisions, a SHA-256 hash of the item
+set, the item IDs beside the predictions, the probability of every answer
+option, the effective quantization configuration and parameter dtypes, the
+package versions, the GPU, and a hash of the script that produced it.
 
 ## Environment
 
-- Python 3.10 or newer
-- A CUDA GPU (experiments were run on a single 8 GB consumer GPU)
-- Install dependencies:
+The results were produced on Windows with an NVIDIA RTX 3070 (8 GB), Python
+3.12, and the versions pinned in `requirements.txt`.
 
 ```bash
+pip install torch==2.6.0+cu124 --index-url https://download.pytorch.org/whl/cu124
 pip install -r requirements.txt
 ```
 
-Key packages: torch, transformers, bitsandbytes, datasets, numpy, scipy,
-matplotlib.
+Llama-3.2 and Gemma-2 are gated on Hugging Face, so accept their licenses and
+run `hf auth login` first.
 
 ## Reproducing the results
 
 ```bash
-# 1. Run every (model, precision, benchmark) pass and save per-run predictions
-python run_experiment.py
-
-# 2. Compute the metrics and print the full results table
-python analyze_results.py
-
-# 3. Regenerate the figures and the LaTeX results table
-python make_figures.py
-
-# 4. Optional supporting checks
-python count_items.py            # item count per benchmark
-python nondeterminism_gate.py    # determinism floor (should be zero)
-python check_mmlu_difficulty.py  # per-subject MMLU accuracy (appendix)
+python run_experiment.py          # all passes, written to results/
+python determinism_check.py       # repeated runs, written to results/determinism/
+python analyze_results.py results --previous results_2026-06   # every number in the paper
+python make_figures.py results figures
 ```
 
-Model weights are downloaded from their public repositories at run time and are
-not stored here. Benchmark subsets are fixed and included, so the numbers in the
-paper are reproducible.
+`analyze_results.py` and `make_figures.py` read only the saved files and need
+no GPU, so the paper's numbers can be checked from the released predictions
+alone. The `--previous` option compares the predictions with the earlier run in
+`results_2026-06/`, which used NF4 as its 4-bit condition and a four-option
+version of CommonsenseQA and did not fix the date in the Llama-3.2 prompt. It
+is kept only for that comparison.
+
+The Llama-3.2 chat template writes the current date into the prompt unless a
+date is supplied. `run_experiment.py` fixes it to the template's default of
+26 July 2024 (`CHAT_DATE`), so that predictions do not depend on the day of the
+run.
 
 ## Repository layout
 
 - `run_experiment.py` runs the passes and writes `results/*.json`.
-- `analyze_results.py` computes Flips, AllFlips, and the directional breakdown.
-- `make_figures.py` produces the figures and the results table.
-- `dutta_comparison.py` compares against the original claim definitions.
-- `nondeterminism_gate.py` measures the run-to-run determinism floor.
-- `results/` per-run predictions and `_bench_items.json` (the fixed subsets).
-- Supporting scripts: `handcheck_ci_flips.py`, `handcheck_reversals.py`,
-  `position_bias_check.py`, `quant_gate.py`, `replication_check.py`,
-  `model_test.py`, `quant_test.py`, `peek_ids.py`.
+- `determinism_check.py` runs and archives the repeated-run determinism check.
+- `analyze_results.py` computes every metric reported in the paper.
+- `make_figures.py` produces the figures and the LaTeX tables.
+- `revisions.json` pins the model and dataset revisions.
+- `results/` contains the per-item predictions, `_bench_items.json`, and
+  `determinism/`.
+- `results_2026-06/` contains the earlier run used for the cross-run comparison.
+- `pilot/` contains the exploratory checks run while designing the study. They
+  are not needed to reproduce the paper.
 
 ## License
 
@@ -83,8 +101,7 @@ Code is released under the MIT License. See `LICENSE`.
 
 ## Citation
 
-If you use this code, please cite the ReScience C article (details will be added
-once the DOI is assigned) and the original work:
+If you use this code, please cite the ReScience C article and the original work:
 
 > Abhinav Dutta, Sanjeev Krishnan, Nipun Kwatra, and Ramachandran Ramjee.
 > Accuracy is Not All You Need. Advances in Neural Information Processing Systems
