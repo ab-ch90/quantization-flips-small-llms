@@ -22,9 +22,9 @@ results. Each result file records the revisions, a hash of the item set, the
 item IDs beside the predictions, the full probability distribution over the
 answer options, the effective quantization configuration, and the software
 and hardware environment. Existing result files are skipped only if their
-item hash, revisions, and prompt hash match the current ones; otherwise the
-script stops. The chat date is fixed (see CHAT_DATE) so prompts do not depend on
-the day of the run.
+item hash, revisions, and prompt hash match the current ones; a file with no
+recorded prompt hash counts as a mismatch, and the script stops. The chat
+date is fixed (see CHAT_DATE) so prompts do not depend on the day of the run.
 """
 
 import datetime
@@ -274,7 +274,7 @@ def is_current(path, model_rev, item_hash, prompt_hash):
     with open(path, encoding="utf-8") as f:
         d = json.load(f)
     return (d.get("model_revision") == model_rev and d.get("items_sha256") == item_hash
-            and d.get("prompts_sha256", prompt_hash) == prompt_hash)
+            and d.get("prompts_sha256") == prompt_hash)
 
 
 def main():

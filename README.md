@@ -46,7 +46,23 @@ The exact items and answer keys are in `results/_bench_items.json`.
 result file records the model and dataset revisions, a SHA-256 hash of the item
 set, the item IDs beside the predictions, the probability of every answer
 option, the effective quantization configuration and parameter dtypes, the
-package versions, the GPU, and a hash of the script that produced it.
+package versions, the GPU, a hash of the rendered prompts, and a hash of the
+script that produced it.
+
+Every generator version that wrote a result file is archived byte for byte in
+`provenance/`, named by the start of its SHA-256 hash. The 48 files for
+Qwen2.5-1.5B, Qwen2.5-3B, Gemma-2, and Phi-3.5 were written by
+`run_experiment_44f279bf.py`, which did not yet record the prompt hash. The 12
+Llama-3.2 files were rerun with `run_experiment_965dc923.py` after the prompt
+date was fixed. `add_prompt_hashes.py` added the prompt hash to the 48 earlier
+files afterwards, from the pinned tokenizers, after checking that every prompt
+the earlier generator rendered is identical to the prompt the current
+`run_experiment.py` renders. Those files carry a `prompt_hash_added` record,
+and nothing else in them was changed.
+
+```bash
+python verify_provenance.py        # checks every result file, no GPU or network needed
+```
 
 ## Environment
 
@@ -88,6 +104,11 @@ run.
 - `determinism_check.py` runs and archives the repeated-run determinism check.
 - `analyze_results.py` computes every metric reported in the paper.
 - `make_figures.py` produces the figures and the LaTeX tables.
+- `verify_provenance.py` checks the revisions, item hashes, prompt hashes, and
+  generator hash of every result file.
+- `add_prompt_hashes.py` added the prompt hash to the files written before it
+  was recorded.
+- `provenance/` holds every generator version that wrote a result file.
 - `revisions.json` pins the model and dataset revisions.
 - `results/` contains the per-item predictions, `_bench_items.json`, and
   `determinism/`.
